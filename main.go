@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 	"strings"
@@ -11,7 +10,6 @@ import (
 	"github.com/labstack/echo/middleware"
 	"github.com/sdvdxl/dinghook"
 	"github.com/sdvdxl/falcon-message/config"
-	"github.com/sdvdxl/falcon-message/sender"
 	"github.com/tylerb/graceful"
 )
 
@@ -26,9 +24,13 @@ import (
 // Timestamp:2017-06-02 08:02:00
 // http://127.0.0.1:8081/portal/template/view/37
 
+const (
+	// IMDingPrefix 钉钉 前缀
+	IMDingPrefix = "[ding]:"
+)
+
 func main() {
 	cfg := config.Read()
-	dingQueue := dinghook.NewQueue(cfg.DingTalk.Token, "告警", 1, 0)
 
 	engine := echo.New()
 	engine.Use(middleware.Recover())
@@ -38,29 +40,28 @@ func main() {
 	server := &graceful.Server{Timeout: time.Second * 10, Server: engine.Server, Logger: graceful.DefaultLogger()}
 	api := engine.Group("/api")
 	api.POST("/v1", func(c echo.Context) error {
+		log.Println("message comming")
 		tos := c.FormValue("tos")
-		var persons []sender.Person
-		personsText := strings.Split(tos, ",")
-		for _, v := range personsText {
-			if err := json.Unmarshal([]byte(tos), &persons); err != nil {
-				log.Println("parse person info error:", err, "info:", v)
+		if strings.HasPrefix(tos, IMDingPrefix) { //是钉钉
+			token := tos[len(IMDingPrefix):]
+			if token == "" {
+				log.Println("ERROR: ding token is blank")
+				return echo.NewHTTPError(http.StatusBadRequest, "need dingding token")
 			}
-		} 
 
-		content := c.FormValue("content")
-		log.Println("sss", tos, content)
-		if tos == "" || content == "" {
-			msg := "tos or content is empty"
-			log.Println(msg)
-			return c.JSON(http.StatusBadRequest, msg)
+			// 发送钉钉
+			ding := dinghook.NewDing(token)
+			content := c.FormValue("content")
+			result := ding.SendMessage(dinghook.Message{Content: content})
+			log.Println(result)
+			if !result.Success {
+				log.Println("token:", token)
+				return echo.NewHTTPError(http.StatusBadRequest, result.ErrMsg)
+			}
 		}
-		dingQueue.PushWithTitle(tos, content)
+
 		return nil
 	})
-
-	go func() {
-		dingQueue.Start()
-	}()
 
 	log.Println("listening on ", cfg.Addr)
 	if err := server.ListenAndServe(); err != nil {
