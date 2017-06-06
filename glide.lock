@@ -1,0 +1,47 @@
+hash: 555a89f816dd1a2292894b3abebd57101b73a815e084ad44a4bbc01a87dc147a
+updated: 2017-06-05T23:42:12.834744698+08:00
+imports:
+- name: github.com/dgrijalva/jwt-go
+  version: d2709f9f1f31ebcda9651b03077758c1f3a0018c
+- name: github.com/go-playground/locales
+  version: 1e5f1161c6416a5ff48840eb8724a394e48cc534
+  subpackages:
+  - currency
+- name: github.com/go-playground/universal-translator
+  version: 71201497bace774495daed26a3874fd339e0b538
+- name: github.com/labstack/echo
+  version: 1049c9613cd371b7ea8f219404c9a821734781ed
+  subpackages:
+  - middleware
+- name: github.com/labstack/gommon
+  version: 1121fd3e243c202482226a7afe4dcd07ffc4139a
+  subpackages:
+  - bytes
+  - color
+  - log
+  - random
+- name: github.com/mattn/go-colorable
+  version: ded68f7a9561c023e790de24279db7ebf473ea80
+- name: github.com/mattn/go-isatty
+  version: fc9e8d8ef48496124e79ae0df75490096eccf6fe
+- name: github.com/sdvdxl/dinghook
+  version: 9e95de3470aec4491ed2755e2f5240287f16fb31
+- name: github.com/tylerb/graceful
+  version: 4654dfbb6ad53cb5e27f37d99b02e16c1872fbbb
+- name: github.com/valyala/bytebufferpool
+  version: e746df99fe4a3986f4d4f79e13c1e0117ce9c2f7
+- name: github.com/valyala/fasttemplate
+  version: dcecefd839c4193db0d35b88ec65b4c12d360ab0
+- name: golang.org/x/crypto
+  version: e1a4589e7d3ea14a3352255d04b6f1a418845e5e
+  subpackages:
+  - acme
+  - acme/autocert
+- name: golang.org/x/sys
+  version: b90f89a1e7a9c1f6b918820b3daa7f08488c8594
+  repo: https://github.com/golang/sys
+  subpackages:
+  - unix
+- name: gopkg.in/go-playground/validator.v9
+  version: 6d8c18553ea1ac493d049edd6f102f52e618f085
+testImports: []
