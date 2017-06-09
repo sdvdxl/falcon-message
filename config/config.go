@@ -10,6 +10,16 @@ import (
 type Config struct {
 	Addr     string   `json:"addr"`
 	DingTalk DingTalk `json:"dingTalk"`
+	Weixin   Weixin   `json:"weixin"`
+}
+
+// Weixin 微信配置
+type Weixin struct {
+	Enable         bool
+	CorpID         string `json:"corpID"`
+	AgentID        string `json:"agentId"`
+	Secret         string `json:"secret"`
+	EncodingAESKey string `json:"encodingAESKey"`
 }
 
 // DingTalk 钉钉配置

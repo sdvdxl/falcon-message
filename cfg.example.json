@@ -4,5 +4,12 @@
         "token": "",
         "enable": true,
         "level": ""
+    },
+    "wexin": {
+        "enable": false,
+        "corpID": "",
+        "agentId": "",
+        "secret": "",
+        "encodingAESKey": ""
     }
 }

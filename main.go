@@ -1,15 +1,16 @@
 package main
 
 import (
+	"errors"
 	"log"
-	"net/http"
 	"strings"
 	"time"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-	"github.com/sdvdxl/dinghook"
 	"github.com/sdvdxl/falcon-message/config"
+	"github.com/sdvdxl/falcon-message/sender"
+	"github.com/sdvdxl/falcon-message/util"
 	"github.com/tylerb/graceful"
 )
 
@@ -27,36 +28,49 @@ import (
 const (
 	// IMDingPrefix 钉钉 前缀
 	IMDingPrefix = "[ding]:"
+	// IMWexinPrefix 微信前缀
+	// IMWexinPrefix = "[wexin]:"
+)
+
+var (
+	cfg  config.Config
+	ding *sender.DingTalk
+	wx   *sender.Weixin
 )
 
 func main() {
-	cfg := config.Read()
+	cfg = config.Read()
+
+	if cfg.DingTalk.Enable {
+		ding = sender.NewDingTalk()
+	}
+
+	if cfg.Weixin.Enable {
+		wx = sender.NewWeixin(cfg.Weixin.CorpID, cfg.Weixin.Secret)
+		go wx.GetAccessToken()
+	}
 
 	engine := echo.New()
-	engine.Use(middleware.Recover())
-	// engine.Use(middleware.Logger())
-
 	engine.Server.Addr = cfg.Addr
 	server := &graceful.Server{Timeout: time.Second * 10, Server: engine.Server, Logger: graceful.DefaultLogger()}
-	api := engine.Group("/api")
-	api.POST("/v1", func(c echo.Context) error {
+	engine.Use(middleware.Recover())
+	// engine.Use(middleware.Logger())
+	api := engine.Group("/api/v1")
+	api.GET("/wechat/auth", wxAuth)
+	api.POST("/message", func(c echo.Context) error {
 		log.Println("message comming")
 		tos := c.FormValue("tos")
+		content := util.HandleContent(c.FormValue("content"))
 		if strings.HasPrefix(tos, IMDingPrefix) { //是钉钉
 			token := tos[len(IMDingPrefix):]
-			if token == "" {
-				log.Println("ERROR: ding token is blank")
-				return echo.NewHTTPError(http.StatusBadRequest, "need dingding token")
+			if cfg.DingTalk.Enable {
+				ding.Send(token, content)
 			}
-
-			// 发送钉钉
-			ding := dinghook.NewDing(token)
-			content := c.FormValue("content")
-			result := ding.SendMessage(dinghook.Message{Content: content})
-			log.Println(result)
-			if !result.Success {
-				log.Println("token:", token)
-				return echo.NewHTTPError(http.StatusBadRequest, result.ErrMsg)
+		} else { //微信
+			if cfg.Weixin.Enable {
+				if err := wx.Send(tos, content); err != nil {
+					return echo.NewHTTPError(500, err.Error())
+				}
 			}
 		}
 
@@ -67,4 +81,23 @@ func main() {
 	if err := server.ListenAndServe(); err != nil {
 		log.Fatal(err)
 	}
+}
+
+// WxAuth 开启回调模式验证
+func wxAuth(context echo.Context) error {
+	if cfg.Weixin.Enable {
+		echostr := context.FormValue("echostr")
+		if echostr == "" {
+			return errors.New("无法获取请求参数, echostr 为空")
+		}
+		var buf []byte
+		var err error
+		if buf, err = wx.Auth(echostr); err != nil {
+			return err
+		}
+
+		return context.JSONBlob(200, buf)
+	}
+
+	return context.String(200, "微信没有启用")
 }
