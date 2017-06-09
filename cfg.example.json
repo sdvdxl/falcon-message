@@ -1,0 +1,8 @@
+{
+    "addr": "localhost:23329",
+    "dingTalk": {
+        "token": "",
+        "enable": true,
+        "level": ""
+    }
+}
