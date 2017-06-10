@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"log"
+	"net/http"
 	"strings"
 	"time"
 
@@ -60,7 +61,13 @@ func main() {
 	api.POST("/message", func(c echo.Context) error {
 		log.Println("message comming")
 		tos := c.FormValue("tos")
-		content := util.HandleContent(c.FormValue("content"))
+		content := c.FormValue("content")
+		log.Println("tos:", tos, " content:", content)
+		if content == "" {
+			return echo.NewHTTPError(http.StatusBadRequest, "content is requied")
+		}
+
+		content = util.HandleContent(content)
 		if strings.HasPrefix(tos, IMDingPrefix) { //是钉钉
 			token := tos[len(IMDingPrefix):]
 			if cfg.DingTalk.Enable {
