@@ -4,8 +4,6 @@
         "token": "",
         "enable": true,
         "level": ""
-<<<<<<< HEAD
-=======
     },
     "wexin": {
         "enable": false,
@@ -13,6 +11,5 @@
         "agentId": "",
         "secret": "",
         "encodingAESKey": ""
->>>>>>> ding
     }
 }
