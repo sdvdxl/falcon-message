@@ -1,5 +1,5 @@
-hash: 555a89f816dd1a2292894b3abebd57101b73a815e084ad44a4bbc01a87dc147a
-updated: 2017-06-05T23:42:12.834744698+08:00
+hash: 6029b568794caaebd3a4144bb70ef66b8db2564c80867eaf14dec7b68f539d23
+updated: 2017-06-10T00:39:04.544199533+08:00
 imports:
 - name: github.com/dgrijalva/jwt-go
   version: d2709f9f1f31ebcda9651b03077758c1f3a0018c
@@ -24,8 +24,14 @@ imports:
   version: ded68f7a9561c023e790de24279db7ebf473ea80
 - name: github.com/mattn/go-isatty
   version: fc9e8d8ef48496124e79ae0df75490096eccf6fe
+- name: github.com/patrickmn/go-cache
+  version: 7ac151875ffb48b9f3ccce9ea20f020b0c1596c8
 - name: github.com/sdvdxl/dinghook
-  version: 9e95de3470aec4491ed2755e2f5240287f16fb31
+  version: 24299be8d80f17a5a5641731abb77824df8f750e
+- name: github.com/sdvdxl/go-tools
+  version: 92b617ee18bcd203ea85d61ae203b3fdc178aba5
+  subpackages:
+  - encrypt
 - name: github.com/tylerb/graceful
   version: 4654dfbb6ad53cb5e27f37d99b02e16c1872fbbb
 - name: github.com/valyala/bytebufferpool
@@ -33,12 +39,13 @@ imports:
 - name: github.com/valyala/fasttemplate
   version: dcecefd839c4193db0d35b88ec65b4c12d360ab0
 - name: golang.org/x/crypto
-  version: e1a4589e7d3ea14a3352255d04b6f1a418845e5e
+  version: e7ba82683099cae71475961448ab8f903ea77c26
+  repo: https://github.com/golang/crypto
   subpackages:
   - acme
   - acme/autocert
 - name: golang.org/x/sys
-  version: b90f89a1e7a9c1f6b918820b3daa7f08488c8594
+  version: 0b25a408a50076fbbcae6b7ac0ea5fbb0b085e79
   repo: https://github.com/golang/sys
   subpackages:
   - unix
