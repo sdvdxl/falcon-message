@@ -16,3 +16,6 @@
 .history
 vendor
 cfg.json
+var
+message.zip
+falcon-message

@@ -1,7 +1,7 @@
 package: github.com/sdvdxl/falcon-message
 import:
 - package: github.com/labstack/echo
-  version: v3.1.0
+  version: ~3.1.0
   subpackages:
   - middleware
 - package: github.com/tylerb/graceful
