@@ -66,7 +66,7 @@ func main() {
 		if content == "" {
 			return echo.NewHTTPError(http.StatusBadRequest, "content is requied")
 		}
-w
+
 		content = util.HandleContent(content)
 		if strings.HasPrefix(tos, IMDingPrefix) { //是钉钉
 			token := tos[len(IMDingPrefix):]
