@@ -69,9 +69,12 @@ func main() {
 
 		content = util.HandleContent(content)
 		if strings.HasPrefix(tos, IMDingPrefix) { //是钉钉
-			token := tos[len(IMDingPrefix):]
+			tokens := tos[len(IMDingPrefix):]
+
 			if cfg.DingTalk.Enable {
-				ding.Send(token, content)
+				for _, v := range strings.Split(tokens, ";") {
+					go ding.Send(v, content)
+				}
 			}
 		} else { //微信
 			if cfg.Weixin.Enable {
