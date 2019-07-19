@@ -1,13 +1,15 @@
 {
-    "addr": "localhost:23329",
-    "dingTalk": {
-        "enable": true
-    },
-    "wexin": {
-        "enable": false,
-        "corpID": "",
-        "agentId": "",
-        "secret": "",
-        "encodingAESKey": ""
-    }
+  "addr": "localhost:23329",
+  "dingTalk": {
+    "enable": true,
+    "templateFile": "message-template.md",
+    "messageType": "markdown"
+  },
+  "wexin": {
+    "enable": false,
+    "corpID": "",
+    "agentId": "",
+    "secret": "",
+    "encodingAESKey": ""
+  }
 }
