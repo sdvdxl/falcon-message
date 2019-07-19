@@ -39,11 +39,14 @@ var (
     cfg  config.Config
     ding *sender.DingTalk
     wx   *sender.Weixin
+
+    tpl *template.Template
 )
 
 func main() {
-    cfg = config.Read()
 
+    cfg = config.Read()
+    tpl = template.Must(template.ParseFiles(cfg.DingTalk.TemplateFile))
     if cfg.DingTalk.Enable {
         ding = sender.NewDingTalk()
     }
@@ -74,13 +77,8 @@ func main() {
             return err
         }
 
-        t, err := template.New("alarm").ParseFiles(cfg.DingTalk.TemplateFile)
-        if err != nil {
-            return err
-        }
-
         var buffer bytes.Buffer
-        if err := t.Execute(&buffer, msg); err != nil {
+        if err := tpl.Execute(&buffer, msg); err != nil {
             return err
         }
         content = buffer.String()
