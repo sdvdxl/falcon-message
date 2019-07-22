@@ -88,11 +88,11 @@ func main() {
 
             if cfg.DingTalk.Enable {
                 for _, v := range strings.Split(tokens, ";") {
-                    go func() {
-                        if err := ding.Send(v, content, cfg.DingTalk.MessageType); err != nil {
+                    go func(token string) {
+                        if err := ding.Send(token, content, cfg.DingTalk.MessageType); err != nil {
                             log.Println("ERR:", err)
                         }
-                    }()
+                    }(v)
                 }
             }
         } else { //微信
