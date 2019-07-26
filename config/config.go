@@ -24,16 +24,16 @@ type Weixin struct {
 }
 
 type AlarmMessage struct {
-    Level         string // 告警等级 P1
-    Type          string // 类型 PROBLEM，OK
-    Endpoint      string // 主机host或者ip
-    Desc          string // 告警描述
-    Counter       string // 告警指标
-    Tags          string // tags
-    GroupInterval int    // 间隔
-    Count         int    // 当前告警次数
-    Time          string
-    Expression    string
+    Level        string // 告警等级 P1
+    Type         string // 类型 PROBLEM，OK
+    Endpoint     string // 主机host或者ip
+    Desc         string // 告警描述
+    Counter      string // 告警指标
+    Tags         string // tags
+    TriggerCount int    // 间隔
+    Count        int    // 当前告警次数
+    Time         string
+    Expression   string
     // 告警时间
 }
 

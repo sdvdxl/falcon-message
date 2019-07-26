@@ -47,15 +47,15 @@ var (
 func main() {
 
     cfg = config.Read()
-    funcMap := template.FuncMap{"elapse": func(count, reportInterval, postpone int) int {
+    funcMap := template.FuncMap{"elapse": func(count, reportInterval, triggerCount, postpone int) int {
         // 都使用 秒计算
         // 超过1次，要计算推迟时间
         if count > 1 {
-            return reportInterval*(count-1) + postpone
+            return reportInterval*triggerCount + postpone*(count-1)
         }
 
         // 第一次，直接返回上报间隔
-        return reportInterval
+        return reportInterval * triggerCount
     }, "divide": func(a, b int) int { return a / b },
         "timeFormat": func(t time.Time, format string) string { return t.Format(format) }}
 

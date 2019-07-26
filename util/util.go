@@ -54,7 +54,7 @@ func HandleContent(content string) (*config.AlarmMessage, error) {
     desc := argStr[:pos-1] // 去掉最后一个空格
 
     // 提取表达式内的时间间隔
-    groupInterval, err := strconv.Atoi(p.FindStringSubmatch(expression)[1])
+    triggerCount, err := strconv.Atoi(p.FindStringSubmatch(expression)[1])
     if err != nil {
         return nil, err
     }
@@ -73,6 +73,6 @@ func HandleContent(content string) (*config.AlarmMessage, error) {
         return nil, err
     }
     time := strings.Join(subArgs[1:], " ")
-    return &config.AlarmMessage{Level: args[0], Type: args[1], Endpoint: args[2],Expression:expression,
-        Desc: desc, Counter: counter, Tags: tags, GroupInterval: groupInterval, Count: count, Time: time}, nil
+    return &config.AlarmMessage{Level: args[0], Type: args[1], Endpoint: args[2], Expression: expression,
+        Desc: desc, Counter: counter, Tags: tags, TriggerCount: triggerCount, Count: count, Time: time}, nil
 }
