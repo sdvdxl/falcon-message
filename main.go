@@ -3,10 +3,11 @@ package main
 import (
     "bytes"
     "errors"
-    "html/template"
     "log"
     "net/http"
+    "path"
     "strings"
+    "text/template"
     "time"
 
     "github.com/labstack/echo"
@@ -46,7 +47,19 @@ var (
 func main() {
 
     cfg = config.Read()
-    tpl = template.Must(template.ParseFiles(cfg.DingTalk.TemplateFile))
+    funcMap := template.FuncMap{"elapse": func(count, reportInterval, postpone int) int {
+        // 都使用 秒计算
+        // 超过1次，要计算推迟时间
+        if count > 1 {
+            return reportInterval*(count-1) + postpone
+        }
+
+        // 第一次，直接返回上报间隔
+        return reportInterval
+    }, "divide": func(a, b int) int { return a / b },
+        "timeFormat": func(t time.Time, format string) string { return t.Format(format) }}
+
+    tpl = template.Must(template.New(path.Base(cfg.DingTalk.TemplateFile)).Funcs(funcMap).ParseFiles(cfg.DingTalk.TemplateFile))
     if cfg.DingTalk.Enable {
         ding = sender.NewDingTalk()
     }

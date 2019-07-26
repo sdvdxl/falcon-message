@@ -24,13 +24,17 @@ type Weixin struct {
 }
 
 type AlarmMessage struct {
-    Level     string // 告警等级 P1
-    Type      string // 类型 PROBLEM，OK
-    Endpoint  string // 主机host或者ip
-    Desc      string // 告警描述
-    Condition string // 告警条件
-    Count     string // 当前告警次数
-    Time      string // 告警时间
+    Level         string // 告警等级 P1
+    Type          string // 类型 PROBLEM，OK
+    Endpoint      string // 主机host或者ip
+    Desc          string // 告警描述
+    Counter       string // 告警指标
+    Tags          string // tags
+    GroupInterval int    // 间隔
+    Count         int    // 当前告警次数
+    Time          string
+    Expression    string
+    // 告警时间
 }
 
 // DingTalk 钉钉配置

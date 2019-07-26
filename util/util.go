@@ -6,6 +6,7 @@ import (
     "errors"
     "github.com/sdvdxl/falcon-message/config"
     "log"
+    "regexp"
     "strconv"
     "strings"
 )
@@ -44,15 +45,34 @@ func HandleContent(content string) (*config.AlarmMessage, error) {
 
     // 描述和条件
     argStr := args[4]
-    subArgs := strings.Split(argStr, " ")
-    condition := strings.Join(subArgs[len(subArgs)-3:], " ")
-    desc := strings.Join(subArgs[:len(subArgs)-3], " ")
+    p := regexp.MustCompile(`\w+\(#(\d+)\)`)
+
+    // 表达式
+    expression := p.FindString(argStr)
+    pos := strings.Index(argStr, expression)
+    // pos 前面的是自定义描述
+    desc := argStr[:pos-1] // 去掉最后一个空格
+
+    // 提取表达式内的时间间隔
+    groupInterval, err := strconv.Atoi(p.FindStringSubmatch(expression)[1])
+    if err != nil {
+        return nil, err
+    }
+
+    // metric tags
+    argStr = strings.TrimSpace(argStr[pos+len(expression):])
+    pos = strings.Index(argStr, " ")
+    counter := argStr[:pos]
+    tags := strings.TrimSpace(argStr[pos:])
 
     // 次数和时间
     argStr = args[5]
-    subArgs = strings.Split(argStr, " ")
-    count := subArgs[0][1:]
+    subArgs := strings.Split(argStr, " ")
+    count, err := strconv.Atoi(subArgs[0][1:])
+    if err != nil {
+        return nil, err
+    }
     time := strings.Join(subArgs[1:], " ")
-    return &config.AlarmMessage{Level: args[0], Type: args[1], Endpoint: args[2],
-        Desc: desc, Condition: condition, Count: count, Time: time}, nil
+    return &config.AlarmMessage{Level: args[0], Type: args[1], Endpoint: args[2],Expression:expression,
+        Desc: desc, Counter: counter, Tags: tags, GroupInterval: groupInterval, Count: count, Time: time}, nil
 }
