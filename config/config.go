@@ -4,6 +4,7 @@ import (
     "encoding/json"
     "io/ioutil"
     "log"
+    "time"
 )
 
 // Config 配置
@@ -32,7 +33,7 @@ type AlarmMessage struct {
     Tags         string // tags
     TriggerCount int    // 间隔
     Count        int    // 当前告警次数
-    Time         string
+    Time         time.Time
     Expression   string
     // 告警时间
 }

@@ -57,7 +57,12 @@ func main() {
         // 第一次，直接返回上报间隔
         return reportInterval * triggerCount
     }, "divide": func(a, b int) int { return a / b },
-        "timeFormat": func(t time.Time, format string) string { return t.Format(format) }}
+        "timeFormat": func(t time.Time, format string) string {
+            return t.Format(format)
+        },
+        "timeDiffFormat": func(t time.Time, format string, seconds int) string {
+            return t.Add(-(time.Second * time.Duration(seconds))).Format(format)
+        }}
 
     tpl = template.Must(template.New(path.Base(cfg.DingTalk.TemplateFile)).Funcs(funcMap).ParseFiles(cfg.DingTalk.TemplateFile))
     if cfg.DingTalk.Enable {

@@ -9,6 +9,7 @@ import (
     "regexp"
     "strconv"
     "strings"
+    "time"
 )
 
 // EncodeJSON json序列化(禁止 html 符号转义)
@@ -72,7 +73,11 @@ func HandleContent(content string) (*config.AlarmMessage, error) {
     if err != nil {
         return nil, err
     }
-    time := strings.Join(subArgs[1:], " ")
+    timeStr := strings.Join(subArgs[1:], " ")
+    t, err := time.Parse("2006-01-02 15:04:05", timeStr)
+    if err != nil {
+        return nil, err
+    }
     return &config.AlarmMessage{Level: args[0], Type: args[1], Endpoint: args[2], Expression: expression,
-        Desc: desc, Counter: counter, Tags: tags, TriggerCount: triggerCount, Count: count, Time: time}, nil
+        Desc: desc, Counter: counter, Tags: tags, TriggerCount: triggerCount, Count: count, Time: t}, nil
 }
