@@ -46,7 +46,7 @@ func HandleContent(content string) (*config.AlarmMessage, error) {
 
     // 描述和条件
     argStr := args[4]
-    p := regexp.MustCompile(`\w+\(#(\d+)\)`)
+    p := regexp.MustCompile(`\w+\(#(\d+)(,+\d+)?\)`)
 
     // 表达式
     expression := p.FindString(argStr)
